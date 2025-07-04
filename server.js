@@ -37,11 +37,17 @@ app.get('/sensors/dht11', (req, res) => {
   }
 });
 
-// Ruta para controlar el relé
+// Ruta para obtener el estado del botón (GET)
+app.get('/controls/relay', (req, res) => {
+  // Aquí, devolvemos el estado del botón como 'true' o 'false'
+  const buttonState = getButtonState();  // Lógica para obtener el estado del botón
+  res.status(200).json({ buttonState });
+});
+
+// Ruta para controlar el relé (POST)
 app.post('/controls/relay', (req, res) => {
-  const { action } = req.body; // Acción para encender o apagar el relé
+  const { action } = req.body;  // Acción para encender o apagar el relé
   
-  // Verificar si la acción es "on" o "off"
   if (action === 'on') {
     relayState = true;
     console.log("Relé activado");
@@ -51,7 +57,6 @@ app.post('/controls/relay', (req, res) => {
     console.log("Relé desactivado");
     res.status(200).json({ message: 'Bomba desactivada' });
   } else {
-    // Si la acción no es "on" ni "off", devolver un error
     res.status(400).json({ message: 'Acción no válida. Se esperaba "on" o "off"' });
   }
 });
