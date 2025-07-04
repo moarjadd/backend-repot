@@ -12,18 +12,11 @@ app.use(cors());
 // Variable para controlar el estado del relé
 let buttonState = "off";  // Inicialmente el botón está apagado
 
-// Variable para almacenar los datos del sensor
-let sensorData = {
-  temperature: undefined,
-  humidity: undefined,
-  soilMoisture: undefined
-};
-
 // Usar body-parser para analizar JSON
 app.use(bodyParser.json());
 
 // Ruta POST para recibir los datos
-app.post('/sensors/dht11', (req, res) => {
+app.post('/dht11', (req, res) => {
   const { temperature, humidity } = req.body;
 
   if (temperature !== undefined && humidity !== undefined) {
@@ -36,7 +29,7 @@ app.post('/sensors/dht11', (req, res) => {
 });
 
 // Ruta POST para recibir los datos del sensor capacitivo de humedad del suelo
-app.post('/sensors/capsoil', (req, res) => {
+app.post('/capsoil', (req, res) => {
   const { soil_moisture } = req.body;
 
   if (soil_moisture !== undefined) {
@@ -79,7 +72,7 @@ app.post('/controls/button', (req, res) => {
 });
 
 // Ruta GET para enviar los datos del sensor DHT11 al frontend
-app.get('/sensors/dht11', (req, res) => {
+app.get('/dht11', (req, res) => {
   if (sensorData.temperature !== undefined && sensorData.humidity !== undefined) {
     res.status(200).json(sensorData);  // Enviar los datos al frontend
   } else {
@@ -88,7 +81,7 @@ app.get('/sensors/dht11', (req, res) => {
 });
 
 // Ruta GET para enviar los datos del sensor de humedad del suelo al frontend
-app.get('/sensors/capsoil', (req, res) => {
+app.get('/capsoil', (req, res) => {
   if (sensorData.soilMoisture !== undefined) {
     res.status(200).json({ soilMoisture: sensorData.soilMoisture });  // Enviar los datos al frontend
   } else {
