@@ -48,6 +48,19 @@ app.post('/sensors/capsoil', (req, res) => {
   }
 });
 
+// Ruta POST para recibir los datos del sensor HC-SR04
+app.post('/hcsr04', (req, res) => {
+  const { distance } = req.body;
+
+  if (distance !== undefined) {
+    sensorDistance = distance;  // Guardar los datos de distancia en sensorDistance
+    console.log(`Distancia: ${distance} cm`);
+    res.status(200).json({ message: 'Datos recibidos correctamente' });
+  } else {
+    res.status(400).json({ message: 'Faltan datos de distancia' });
+  }
+});
+
 // Ruta GET para obtener el estado del botón
 app.get('/controls/button', (req, res) => {
   res.status(200).json({ state: buttonState });  // Devuelve el estado del botón
@@ -80,6 +93,15 @@ app.get('/sensors/capsoil', (req, res) => {
     res.status(200).json({ soilMoisture: sensorData.soilMoisture });  // Enviar los datos al frontend
   } else {
     res.status(404).json({ message: 'Datos de humedad del suelo no encontrados' });
+  }
+});
+
+// Ruta GET para enviar los datos del sensor HC-SR04 al frontend
+app.get('/hcsr04', (req, res) => {
+  if (sensorDistance !== undefined) {
+    res.status(200).json({ distance: sensorDistance });  // Enviar los datos de distancia al frontend
+  } else {
+    res.status(404).json({ message: 'Datos no encontrados' });
   }
 });
 
