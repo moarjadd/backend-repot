@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000; // Puerto dinámico proporcionado por Ren
 app.use(cors());
 
 // Variable para controlar el estado del relé
-let relayState = false; // El relé inicialmente está apagado
+let buttonState = "off";  // Inicialmente el botón está apagado
 
 // Usar body-parser para analizar JSON
 app.use(bodyParser.json());
@@ -28,28 +28,20 @@ app.post('/sensors/dht11', (req, res) => {
   }
 });
 
-// Ruta POST para controlar el relé
-app.post('/controls/relay', (req, res) => {
-  const { action } = req.body; // Obtener la acción del body de la solicitud
+// Ruta GET para obtener el estado del botón
+app.get('/controls/button', (req, res) => {
+  res.status(200).json({ state: buttonState });  // Devuelve el estado del botón
+});
 
-  if (action === 'on') {
-    if (!relayState) {
-      relayState = true; // Activar el relé
-      console.log('Relé activado');
-      res.status(200).json({ message: 'Bomba activada' });
-    } else {
-      res.status(400).json({ message: 'La bomba ya está activada' });
-    }
-  } else if (action === 'off') {
-    if (relayState) {
-      relayState = false; // Desactivar el relé
-      console.log('Relé desactivado');
-      res.status(200).json({ message: 'Bomba desactivada' });
-    } else {
-      res.status(400).json({ message: 'La bomba ya está desactivada' });
-    }
+// Ruta POST para recibir el control del botón y cambiar el estado
+app.post('/controls/button', (req, res) => {
+  const { action } = req.body;  // Acción enviada desde el frontend
+
+  if (action === 'on' || action === 'off') {
+    buttonState = action;  // Actualizar el estado del botón
+    res.status(200).json({ message: `Botón ${action}` });
   } else {
-    res.status(400).json({ message: 'Acción no válida' }); // En caso de una acción no válida
+    res.status(400).json({ message: 'Acción no válida' });
   }
 });
 
