@@ -56,11 +56,6 @@ app.post('/controls/relay', (req, res) => {
   }
 });
 
-// Ruta GET para obtener el estado del relé
-app.get('/states/relay', (req, res) => {
-  res.status(200).json({ relayState });
-});
-
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor en ejecución en http://localhost:${port}`);
