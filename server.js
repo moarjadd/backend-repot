@@ -9,6 +9,9 @@ const port = process.env.PORT || 3000; // Puerto dinámico proporcionado por Ren
 // Configurar CORS para permitir solicitudes del ESP32
 app.use(cors());
 
+// Variable para controlar el estado del relé
+let relayState = false;
+
 // Usar body-parser para analizar JSON
 app.use(bodyParser.json());
 
@@ -32,6 +35,28 @@ app.get('/sensors/dht11', (req, res) => {
   } else {
     res.status(404).json({ message: 'Datos no encontrados' });
   }
+});
+
+// Ruta para controlar el relé
+app.post('/controls/relay', (req, res) => {
+  const { action } = req.body; // Acción para encender o apagar el relé
+  
+  if (action === 'on') {
+    relayState = true;
+    console.log("Relé activado");
+    res.status(200).json({ message: 'Bomba activada' });
+  } else if (action === 'off') {
+    relayState = false;
+    console.log("Relé desactivado");
+    res.status(200).json({ message: 'Bomba desactivada' });
+  } else {
+    res.status(400).json({ message: 'Acción no válida' });
+  }
+});
+
+// Ruta GET para obtener el estado del relé
+app.get('/states/relay', (req, res) => {
+  res.status(200).json({ relayState });
 });
 
 // Iniciar el servidor
